@@ -1,0 +1,49 @@
+/* Centering the signup box */
+.signup {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    
+    /* Center horizontally and vertically */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .signup h2 {
+    text-align: center;
+  }
+  
+  .signup form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .signup label {
+    margin: 10px 0 5px;
+  }
+  
+  .signup input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .signup button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .signup button:hover {
+    background-color: #0056b3;
+  }
+  

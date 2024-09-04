@@ -1,0 +1,42 @@
+/* src/components/Header.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+.header {
+  background-color: #333;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 40px; /* Adjust size to match text */
+  height: auto;
+  margin-right: 10px; /* Space between logo and text */
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.navigation a, .logout-button {
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.navigation a:hover, .logout-button:hover {
+  text-decoration: underline;
+}

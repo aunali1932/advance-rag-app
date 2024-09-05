@@ -39,6 +39,7 @@ const ChatInterface = () => {
     setIsApiKeySet(true); // Mark the API key as set
   };
 
+  
   const handleResetApiKey = () => {
     // Simulate resetting the API key
     console.log('API key reset');

@@ -1,0 +1,23 @@
+{
+  "approaches": [
+    "Hypothetical Document Embedding (HyDE)",
+    "Choose Chunk Size",
+    "Context Enrichment Window Arr",
+    "Contextual Compression",
+    "CRAG",
+    "Document Augmentation",
+    "Explainable Retrieval",
+    "Fusion Retrieval",
+    "Fusion Retrieval With Llamaindex",
+    "Graph Rag",
+    "Hierarchical Indices",
+    "Query Transformations",
+    "Raptor",
+    "Reliable Rag",
+    "Reranking",
+    "Reranking With Llamaindex",
+    "Retrieval With Feedback Loop",
+    "Self Rag",
+    "Semantic Chunking"
+  ]
+}

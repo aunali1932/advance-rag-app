@@ -10,7 +10,7 @@
 
 # production
 /build
-
+/advance-rag-app-env
 # misc
 .DS_Store
 .env.local

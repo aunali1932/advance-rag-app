@@ -16,3 +16,6 @@ class QuestionRequest(BaseModel):
     username: str
     chat_id: int
     question: str
+    
+class ApiKeyRequest(BaseModel):
+    api_key: str

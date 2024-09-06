@@ -6,6 +6,7 @@ from itsdangerous import Signer, BadSignature
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from schemas import *
+import openai
 
 app = FastAPI()
 
@@ -60,16 +61,38 @@ def login(request: LoginRequest, response: Response, db=Depends(get_db)):
     #response.set_cookie(key="fakesession", value="fake-cookie-session-value")
     return {"message": f"Logged in as {request.username}"}
 
+def check_openai_api_key(api_key: str) -> bool:
+    openai.api_key = api_key
+    try:
+        # Trying to list models (can be any valid OpenAI API call)
+        openai.models.list()
+    except:
+        return False
+    return True
 @app.post("/setApiKey")
 def set_api_key(request: ApiKeyRequest, response: Response):
     if not request.api_key:
         raise HTTPException(status_code=400, detail="API Key is required.")
-    apiKey_token = signer.sign(request.api_key).decode()
+
+    # Check if the provided API key is valid
+    if not check_openai_api_key(request.api_key):
+        raise HTTPException(status_code=400, detail="Invalid OpenAI API Key.")
     
-    # Set the API key in a cookie
-    response.set_cookie(key="api_key", value=apiKey_token)
-    #response.set_cookie(key="fakesession", value="fake-cookie-session-value")
+    # If valid, sign and set the API key in a cookie
+    apiKey_token = signer.sign(request.api_key).decode()
+    response.set_cookie(key="openai_api_key", value=apiKey_token, httponly=True, secure=False)
+
     return {"message": "API Key set successfully."}
+# @app.post("/setApiKey")
+# def set_api_key(request: ApiKeyRequest, response: Response):
+#     if not request.api_key:
+#         raise HTTPException(status_code=400, detail="API Key is required.")
+#     apiKey_token = signer.sign(request.api_key).decode()
+    
+#     # Set the API key in a cookie
+#     response.set_cookie(key="openai_api_key", value=apiKey_token)
+#     #response.set_cookie(key="fakesession", value="fake-cookie-session-value")
+#     return {"message": "API Key set successfully."}
 
 # Create a new chat with PDF processing
 @app.post("/chat")
@@ -98,7 +121,7 @@ def logout(response: Response):
 @app.post("/resetApiKey")
 def logout(response: Response):
     # Clear the session cookie
-    response.delete_cookie("api_key")
+    response.delete_cookie("openai_api_key")
     return {"message": "Successfully reset api key"}
 
 from fastapi import Request
@@ -121,6 +144,18 @@ def get_current_user(request: Request, session: str = Cookie(None)):
 def protected_route(username: str = Depends(get_current_user)):
     return {"message": f"Hello, {username}. You are authenticated!"}
 
+def get_openai_api_key(request: Request, api_key: str = Cookie(None)):
+    print(f"Received cookies: {request.cookies}")
+    
+    if "api_key" not in request.cookies or api_key is None:
+        raise HTTPException(status_code=401, detail="API Key not found in cookies")
+    
+    try:
+        # Unsign and decode the API key from the signed cookie
+        unsigned_api_key = signer.unsign(api_key).decode()
+        return unsigned_api_key
+    except BadSignature:
+        raise HTTPException(status_code=401, detail="Invalid API key signature")
 
 
 

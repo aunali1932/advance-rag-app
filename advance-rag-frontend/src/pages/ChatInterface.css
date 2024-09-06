@@ -215,3 +215,24 @@ h3 {
 .chat-input button:hover {
   background-color: #0056b3;
 }
+
+/* Add shake animation when the API key is invalid */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.api-input.error {
+  border-color: red; /* Change border color to red */
+  animation: shake 0.3s; /* Add shaking animation */
+}
+
+.api-input-section .api-input.error:focus {
+  outline: none;
+  border-color: red;
+}
+
+

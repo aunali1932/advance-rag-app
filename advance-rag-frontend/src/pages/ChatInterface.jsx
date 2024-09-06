@@ -12,6 +12,7 @@ const ChatInterface = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar state
   const [showWarning, setShowWarning] = useState(false); // Warning box state
+  const [apiKeyError, setApiKeyError] = useState(false); // Tracks if API key is invalid
 
   // Fetch RAG approaches from the external JSON file
   useEffect(() => {
@@ -31,8 +32,8 @@ const ChatInterface = () => {
 
   const handleApiKeyChange = (e) => {
     setApiKey(e.target.value);
+    setApiKeyError(false); // Reset the error state when the user starts typing again
   };
-
 
   const handleSetApiKey = async () => {
     try {
@@ -45,40 +46,27 @@ const ChatInterface = () => {
       if (response.status === 200) {
         console.log('API key set successfully:', response.data.message);
         setIsApiKeySet(true); // Update state to indicate that API key has been set
+        setApiKeyError(false); // Clear any previous errors
       } else {
         console.error('Error setting API key:', response.data.detail);
+        setApiKeyError(true); // Mark the API key as invalid
       }
     } catch (error) {
       console.error('Error in API call:', error.response ? error.response.data : error.message);
+      setApiKeyError(true); // Set error to true if API key is invalid
     }
   };
-  
-  // const handleLogout = () => {
-  //   axios.post('http://localhost:8000/logout', {}, { withCredentials: true })
-  //     .then(() => {
-  //       setIsLoggedIn(false);
-  //       navigate('/'); // Redirect to home page after logout
-  //     })
-  //     .catch(error => {
-  //       console.error('Error during logout:', error);
-  //     });
-  // };
-  
+
   const handleResetApiKey = () => {
     axios.post('http://localhost:8000/resetApiKey', {}, { withCredentials: true })
     .then(() => {
       setApiKey('');
-      //setIsLoggedIn(false);
       setIsApiKeySet(false);
-       // Redirect to home page after logout
     })
     .catch(error => {
-      console.error('Error during resetting api key', error);
+      console.error('Error during resetting API key', error);
     });
-    // Simulate resetting the API key
     console.log('API key reset');
-     // Clear the API key
-     // Mark the API key as not set
   };
 
   const handlePdfUpload = (e) => {
@@ -153,7 +141,7 @@ const ChatInterface = () => {
                   placeholder="Enter OpenAI API Key"
                   value={apiKey}
                   onChange={handleApiKeyChange}
-                  className="api-input"
+                  className={`api-input ${apiKeyError ? 'error' : ''}`} // Add error class conditionally
                 />
                 <button onClick={handleSetApiKey} className="set-api-btn">Set</button>
               </div>

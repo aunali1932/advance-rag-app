@@ -60,6 +60,16 @@ def login(request: LoginRequest, response: Response, db=Depends(get_db)):
     #response.set_cookie(key="fakesession", value="fake-cookie-session-value")
     return {"message": f"Logged in as {request.username}"}
 
+@app.post("/setApiKey")
+def set_api_key(request: ApiKeyRequest, response: Response):
+    if not request.api_key:
+        raise HTTPException(status_code=400, detail="API Key is required.")
+    apiKey_token = signer.sign(request.api_key).decode()
+    
+    # Set the API key in a cookie
+    response.set_cookie(key="api_key", value=apiKey_token)
+    #response.set_cookie(key="fakesession", value="fake-cookie-session-value")
+    return {"message": "API Key set successfully."}
 
 # Create a new chat with PDF processing
 @app.post("/chat")
@@ -84,6 +94,12 @@ def logout(response: Response):
     # Clear the session cookie
     response.delete_cookie("session")
     return {"message": "Successfully logged out"}
+
+@app.post("/resetApiKey")
+def logout(response: Response):
+    # Clear the session cookie
+    response.delete_cookie("api_key")
+    return {"message": "Successfully reset api key"}
 
 from fastapi import Request
 # Retrieve user from session

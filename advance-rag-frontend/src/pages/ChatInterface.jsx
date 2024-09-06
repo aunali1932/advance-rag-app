@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ChatInterface.css';
+import axios from 'axios';
 
 const ChatInterface = () => {
   const [ragApproaches, setRagApproaches] = useState([]);
@@ -32,19 +33,52 @@ const ChatInterface = () => {
     setApiKey(e.target.value);
   };
 
-  const handleSetApiKey = () => {
-    // Simulate API call to set the API key
-    // You will replace this with the actual backend call later
-    console.log('API key set:', apiKey);
-    setIsApiKeySet(true); // Mark the API key as set
-  };
 
+  const handleSetApiKey = async () => {
+    try {
+      const response = await axios.post('http://localhost:8000/setApiKey', {
+        api_key: apiKey,  // Send the API key to the backend
+      },{
+        withCredentials: true // Ensure cookies are sent and received
+      });
+  
+      if (response.status === 200) {
+        console.log('API key set successfully:', response.data.message);
+        setIsApiKeySet(true); // Update state to indicate that API key has been set
+      } else {
+        console.error('Error setting API key:', response.data.detail);
+      }
+    } catch (error) {
+      console.error('Error in API call:', error.response ? error.response.data : error.message);
+    }
+  };
+  
+  // const handleLogout = () => {
+  //   axios.post('http://localhost:8000/logout', {}, { withCredentials: true })
+  //     .then(() => {
+  //       setIsLoggedIn(false);
+  //       navigate('/'); // Redirect to home page after logout
+  //     })
+  //     .catch(error => {
+  //       console.error('Error during logout:', error);
+  //     });
+  // };
   
   const handleResetApiKey = () => {
+    axios.post('http://localhost:8000/resetApiKey', {}, { withCredentials: true })
+    .then(() => {
+      setApiKey('');
+      //setIsLoggedIn(false);
+      setIsApiKeySet(false);
+       // Redirect to home page after logout
+    })
+    .catch(error => {
+      console.error('Error during resetting api key', error);
+    });
     // Simulate resetting the API key
     console.log('API key reset');
-    setApiKey(''); // Clear the API key
-    setIsApiKeySet(false); // Mark the API key as not set
+     // Clear the API key
+     // Mark the API key as not set
   };
 
   const handlePdfUpload = (e) => {
